@@ -82,7 +82,7 @@ with RECURSIVE cte
         join "AccM" m on t."accCode" = m."accCode" 
     union select a.id,a."accCode", a."parentId"
         , ( cte."amount") as "amount" from "AccM" a join cte on cte."parentId" = a.id ) 
-select id, "accCode", "parentId", sum(amount ) 
+select id, "accCode", "parentId", sum(amount) as amount
     from cte 
         group by id, "accCode", "parentId" order by cte.id
 '''
@@ -95,9 +95,11 @@ try:
    
     cursor.execute(sql)
     rows = cursor.fetchall()
-    print(json.dumps(rows, indent=2))
-    # record = cursor.fetchone()
-    # print("You are connected to - ", record,"\n")
+    j = json.dumps(rows, indent=2)
+    list = json.loads(j)
+    print(list)
+    # print(json.dumps(rows, indent=2))
+    # print(rows)
 except (Exception, psycopg2.Error) as error :
     print ("Error while connecting to PostgreSQL", error)
 finally:
