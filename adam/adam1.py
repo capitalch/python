@@ -64,8 +64,13 @@
 # print(statistics.mean(L))
 
 # template string
-from string import Template
+# from string import Template
 
-t = Template('$name is the $job of $company')
-s = t.substitute(name='Tim Cook', job='CEO', company='Apple Inc.')
-print(s)
+# t = Template('$name is the $job of $company')
+# s = t.substitute(name='Tim Cook', job='CEO', company='Apple Inc.')
+# print(s)
+
+import json
+with open('config.json') as json_file:
+    cfg = json.load(json_file)
+print(cfg['trackTest']['schema'])
