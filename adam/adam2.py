@@ -1,7 +1,7 @@
 # database connections
 import psycopg2
 try:
-    connection = psycopg2.connect(user='webadmin', password='AMGnbm23767', host='node15792-chisel.cloudjiffy.net', port='11035', database='postgres')
+    connection = psycopg2.connect(user='webadmin', password='', host='', port='11035', database='postgres')
     cursor = connection.cursor()
     print ( connection.get_dsn_parameters(),"\n")
     cursor.execute("SELECT count(*) from comments;")
