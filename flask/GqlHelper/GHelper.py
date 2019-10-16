@@ -79,7 +79,13 @@ class Query(ObjectType):
     def resolve_personById(self, args, id):
         return {'firstName':'Ujjal', 'lastName':'Saha', 'age':50}
 
-schema = Schema(query=Query)
+class Mutation(ObjectType):
+    addHello = String()
+
+    def resolve_addHello(self, args):
+        return 'Hello world in mutations'
+
+schema = Schema(query=Query, mutation = Mutation)
 
 @app.route('/')
 def hello_world():
