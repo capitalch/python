@@ -49,6 +49,7 @@ class Query(ObjectType):
     people = List(PersonType)
     contacts = String()
     accounts = List(AccountType)
+    personById =  Field(PersonType, id=Int(required=True)) #List(AccountType, id=Int(required=True))
 
     def resolve_hello(self, args):
         return 'Hello World'
@@ -74,6 +75,9 @@ class Query(ObjectType):
         list = json.loads(j)
         cursor.close()
         return(list)
+    
+    def resolve_personById(self, args, id):
+        return {'firstName':'Ujjal', 'lastName':'Saha', 'age':50}
 
 schema = Schema(query=Query)
 
