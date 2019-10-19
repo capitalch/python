@@ -16,13 +16,13 @@ jInput = '''
         "values":[
             {
                 "accId":"1",
-                "amount":"2000.00",
+                "amount":2000.00,
                 "tranType": "d",
                 "jData":""
             },
             {
                 "accId":"2",
-                "amount":"2025.00",
+                "amount":2025.00,
                 "tranType": "d",
                 "jData":""
             }
@@ -53,7 +53,7 @@ childFields = '"{0}"'.format('", "'.join(childFieldsList)) + f', "{fkeyName}"' #
 items = []
 for itemDict in childList:
     itemValuesList = list(itemDict.values())
-    itemValues = "'{0}'".format("', '".join(itemValuesList)) + f", '{fkeyValue}'" # add foreign key at last
+    itemValues = "'{0}'".format("', '".join(str(x) for x in itemValuesList)) + f", '{fkeyValue}'" # add foreign key at last
     items.append(itemValues)
 
 childValues = ""
