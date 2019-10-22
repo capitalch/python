@@ -25,7 +25,7 @@ class Query(ObjectType):
     person = Field(PersonType)
    
     def resolve_hello(parent, info):
-        return 'Hello world'
+        return 'Hello world743'
     def resolve_helloWithParam(parent, info, name):
         return f'Hello {name}'
     def resolve_person(parent, info):
@@ -55,7 +55,7 @@ class MyMutations(ObjectType):
     createIdea = Field(Idea)
 
     def resolve_createIdea(parent, info):
-        return "This is the idea"
+        return "This is the idea1"
 
 schema = Schema(query = Query, mutation = MyMutations)
 app.add_url_rule('/graphql', view_func=GraphQLView.as_view(
@@ -66,6 +66,7 @@ app.add_url_rule('/graphql', view_func=GraphQLView.as_view(
 
 @app.route('/')
 def hello_world():
+
     r = requests.get('http://chisel.cloudjiffy.net/contacts/short')
     return (r.text)
 
