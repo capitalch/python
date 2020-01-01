@@ -87,8 +87,8 @@ select id, "accCode", "parentId", sum(amount) as amount
         group by id, "accCode", "parentId" order by cte.id
 '''
 
-import psycopg2
-from psycopg2.extras import RealDictCursor
+# import psycopg2
+# from psycopg2.extras import RealDictCursor
 # try:
 #     connection = psycopg2.connect(user=cfg['trackTest']['user'], password=cfg['trackTest']['password'], host=cfg['trackTest']['host'], port=cfg['trackTest']['port'], database=cfg['trackTest']['database'])
 #     cursor = connection.cursor(cursor_factory=RealDictCursor)
@@ -161,3 +161,21 @@ newTokens = map(processToken, tokens)
 
 a = ",".join(newTokens)
 print(a)
+# dict = {
+#     "a": '''1''',
+#     "b": '''2'''
+# }
+
+# s = json.dumps(dict)
+# print(s)
+m = '''{
+    "a":"ab"c",
+     "b":"cef" 
+    }'''
+# import ast
+# res = json.loads(json.dumps(m))
+# print(json.dumps(res))
+import re
+phone = "2004-959-559 # This is 1 Phone Number"
+num = re.sub(r'\w', "X", phone)
+print("Phone Num : ", num)
