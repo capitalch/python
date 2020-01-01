@@ -106,18 +106,58 @@ from psycopg2.extras import RealDictCursor
 #         connection.close()
 #         print("PostgreSQL connection is closed")
 
-sql = "insert into adam1(sample) values('ABC') returning id"
-try:
-    connection = psycopg2.connect(user='webadmin', password='AMGnbm23767', host='node15792-chisel.cloudjiffy.net', port='11035', database='trace')
-    cursor = connection.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(sql)
-    id = cursor.fetchone()
-    connection.commit()
+# sql = "insert into adam1(sample) values('ABC') returning id"
+# try:
+#     connection = psycopg2.connect(user='webadmin', password='AMGnbm23767', host='node15792-chisel.cloudjiffy.net', port='11035', database='trace')
+#     cursor = connection.cursor(cursor_factory=RealDictCursor)
+#     cursor.execute(sql)
+#     id = cursor.fetchone()
+#     connection.commit()
 
-except (Exception, psycopg2.Error) as error:
-    print ("Error while connecting to PostgreSQL", error)
-finally:
-    if(connection):
-        cursor.close()
-        connection.close()
-        print("PostgreSQL connection is closed")
+# except (Exception, psycopg2.Error) as error:
+#     print ("Error while connecting to PostgreSQL", error)
+# finally:
+#     if(connection):
+#         cursor.close()
+#         connection.close()
+#         print("PostgreSQL connection is closed")
+
+
+import re
+# def escapeDoubleQuotes(match):
+#     match = match.group()
+#     s1 = match[1:-1] # gives the string excluding first and last char
+#     s2 = s1.replace('"','\\"') # replace all " with \". Need to give \\ instead of \
+#     s3 = match[0]+s2+match[-1] # put back the first and last char in the replaced string
+#     return s3
+# a = '"I am ae"""klkkl"""" "boy"'
+# b = re.sub(r'^("| *")[\s\S]*"[\s\S]*"$', escapeDoubleQuotes, a)
+# print(b)
+
+a = '"name":"Susha"nt", "address":"12 J.l", "phone":12112'
+def escapeDoubleQuotes(match):
+    match = match.group()
+    s1 = match[1:-1] # gives the string excluding first and last char
+    s2 = s1.replace('"','\\"') # replace all " with \". Need to give \\ instead of \
+    s3 = match[0]+s2+match[-1] # put back the first and last char in the replaced string
+    return s3
+tokens = a.split(',')
+
+def processToken(token):
+    keyValue = token.split(':')
+    value = keyValue[1]
+    value = re.sub(r'^("| *")[\s\S]*"[\s\S]*"$', escapeDoubleQuotes, value)
+    # ^             :start with
+    # ("| *")       :" or zero or more space followed by a"
+    # [\s\S]*        : Any character including newLine occurs zero or many times. A dot in the place will not work because dot does not include newline
+    # "             : In between there is a "
+    # [\s\S]*        : Zero or more chars
+    # "$            : end is a "
+    keyValue[1] = value
+    token = ':'.join(keyValue)
+    return token
+
+newTokens = map(processToken, tokens)
+
+a = ",".join(newTokens)
+print(a)
