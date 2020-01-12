@@ -1,3 +1,26 @@
+import simplejson as json
+myDict = {
+    "tableName": "cust",
+    "data": {
+        "name": 'sushant',
+        "address": '12 J.l',
+        "details1": {
+            "name": "else"
+        }
+    }
+}
+data = myDict["data"]
+details = None
+if 'details' in data:
+    details = data.pop("details")
+
+if details:
+    print('details there')
+else:
+    print ('Details not exists')
+
+print('a')
+
 # print('Hello world')
 # myList = ['a','b','c']
 # print (myList)
@@ -71,7 +94,7 @@
 # print(s)
 
 # import json
-import simplejson as json
+# import simplejson as json
 # with open('config.json') as json_file:
 #     cfg = json.load(json_file)
 
@@ -92,7 +115,7 @@ select id, "accCode", "parentId", sum(amount) as amount
 # try:
 #     connection = psycopg2.connect(user=cfg['trackTest']['user'], password=cfg['trackTest']['password'], host=cfg['trackTest']['host'], port=cfg['trackTest']['port'], database=cfg['trackTest']['database'])
 #     cursor = connection.cursor(cursor_factory=RealDictCursor)
-   
+
 #     cursor.execute(sql)
 #     rows = cursor.fetchall()
 #     j = json.dumps(rows, indent=2)
@@ -129,14 +152,8 @@ select id, "accCode", "parentId", sum(amount) as amount
 
 # s = json.dumps(dict)
 # print(s)
-m = '''{
-    "a":"ab"c",
-     "b":"cef" 
-    }'''
-# import ast
-# res = json.loads(json.dumps(m))
-# print(json.dumps(res))
-import re
-phone = "2004-959-559 # This is 1 Phone Number"
-num = re.sub(r'\w', "X", phone)
-print("Phone Num : ", num)
+# import re
+# n = 'R ₹  123,998.00'
+# list = re.findall('\d*\.?\d+',n)
+# out = "".join(list)
+# print(out)
