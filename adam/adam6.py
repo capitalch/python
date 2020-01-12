@@ -1,4 +1,5 @@
 import simplejson as json
+import psycopg2
 from itertools import repeat
 
 def getSql(data, tableName, fkeyName, fkeyValue):
@@ -20,23 +21,25 @@ def getSql(data, tableName, fkeyName, fkeyValue):
     '''
     return(sql, valuesTuple)
 
-def execData(data, tableName, fkeyName, fkeyValue):
+def execData(data, tableName, fkeyName, fkeyValue, cursor):
     details = None
     if 'details' in data:
         details = data.pop('details')
 
     sql, tup = getSql(data, tableName, fkeyName, fkeyValue)   
     # execute sql here. You got id, say it is 101
-    id = 101
+    cursor.execute(sql,tup)
+    record = cursor.fetchone()
+    id = record[0]
     
     if details:
         if type(details) is list:
             for det in details:
-                execSqlObject(det, id)
+                execSqlObject(det, cursor, id)
         else:
-            execSqlObject(details, id)
+            execSqlObject(details, cursor, id)
 
-def execSqlObject(sqlObject, fkeyValue=None):
+def execSqlObject(sqlObject, cursor, fkeyValue=None):
     tableName = sqlObject["tableName"]
     
     fkeyName = None
@@ -46,29 +49,52 @@ def execSqlObject(sqlObject, fkeyValue=None):
     if data:
         if type(data) is list:
             for dt in data:
-                execData(dt, tableName, fkeyName, fkeyValue)
+                execData(dt, tableName, fkeyName, fkeyValue, cursor)
         else:
-            execData(data, tableName, fkeyName, fkeyValue)
+            execData(data, tableName, fkeyName, fkeyValue, cursor)
     
     # return(sql, tup)
 
 sqlObject = {
-    "tableName": "cust",
+    "tableName": "SampleH",
     "data": {
-        "custName": "abc",
-        "custPhone": "22234",
+        "refNo": "ref1",
+        "remarks": "This remarks1",
         "details": [{
-            "tableName": "addresses",
-            "fkeyName": "custId",
+            "tableName": "SampleD",
+            "fkeyName": "sampleHeaderId",
             "data": [{
-                    "address1": "12 J.L",
-                    "pin": "111234"
+                    "lineRefNo": "Line ref no 1",
+                    "lineRemarks": "This is line remarks 1"
+            }, {
+                    "lineRefNo": "Line ref no 2",
+                    "lineRemarks": "This is line remarks 2"
             }]
         }]
     }
 }
 
-execSqlObject(sqlObject)
+try:
+    with open('config.json') as f:
+        cfg = json.load(f)
+    connection = psycopg2.connect(user=cfg["user"], password=cfg["password"], host=cfg["host"], port=cfg["port"], database=cfg["database"])
+    cursor = connection.cursor()
+    print ( connection.get_dsn_parameters(),"\n")
+    execSqlObject(sqlObject, cursor)
+    # cursor.execute(headerSql,headerValuestuple)
+    # record = cursor.fetchone()
+    connection.commit()
+    print("Data saved")
+except (Exception, psycopg2.Error) as error :
+    print ("Error while connecting to PostgreSQL", error)
+    connection.rollback()
+finally:
+    if(connection):
+        cursor.close()
+        connection.close()
+        print("PostgreSQL connection is closed")
+
+
 # print(sql)
 
 
