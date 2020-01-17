@@ -1,25 +1,39 @@
 import simplejson as json
-myDict = {
-    "tableName": "cust",
-    "data": {
-        "name": 'sushant',
-        "address": '12 J.l',
-        "details1": {
-            "name": "else"
-        }
-    }
-}
-data = myDict["data"]
-details = None
-if 'details' in data:
-    details = data.pop("details")
+import re
 
-if details:
-    print('details there')
-else:
-    print ('Details not exists')
+def extractAmount(s):
+    amtList = re.findall('\d*\.?\d+',s)
+    return "".join(amtList)  
+# creditAmount':'%u20B9 12,000.20
+credits = {"accountName": "", "creditAmount": "%u20B9 1,002.32"}
+remList = [',','%u20B9', ' ']
+amount = credits["creditAmount"]
+for i in remList:
+    amount = amount.replace(i,'')
+# amt = amount.encode('ascii', 'ignore')
+# amount = extractAmount(credits["creditAmount"])
+print(amount)
+# myDict = {
+#     "tableName": "cust",
+#     "data": {
+#         "name": 'sushant',
+#         "address": '12 J.l',
+#         "details1": {
+#             "name": "else"
+#         }
+#     }
+# }
+# data = myDict["data"]
+# details = None
+# if 'details' in data:
+#     details = data.pop("details")
 
-print('a')
+# if details:
+#     print('details there')
+# else:
+#     print ('Details not exists')
+
+# print('a')
 
 # print('Hello world')
 # myList = ['a','b','c']
@@ -146,7 +160,7 @@ select id, "accCode", "parentId", sum(amount) as amount
 #         print("PostgreSQL connection is closed")
 
 
-import re
+
 # def escapeDoubleQuotes(match):
 #     match = match.group()
 #     s1 = match[1:-1] # gives the string excluding first and last char

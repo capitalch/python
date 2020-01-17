@@ -80,15 +80,18 @@ pivot.rename(
 )
 
 pivot['Closing'] = pivot['Opening'] + pivot['Debit'] - pivot['Credit']
-pivot['clos_dc'] = pivot['Closing'].apply(lambda x: 'Dr' if x >= 0 else 'Cr')
+
+
+
+pivot.loc['total'] = pivot.select_dtypes(pd.np.number).sum() # for summary
 pivot['op_dc'] = pivot['Opening'].apply(lambda x: 'Dr' if x >= 0 else 'Cr')
-# pivot.reindex(
-#     columns=['O','op_dc', 'D', 'C', 'clos_dc']
-# )
-# pivot.rename(
-#     columns={
-#         'cl_d_c': 'c'
-#     })
+pivot['clos_dc'] = pivot['Closing'].apply(lambda x: 'Dr' if x >= 0 else 'Cr')
+pivot = pivot.reindex(
+    columns=['Opening','op_dc', 'Debit', 'Credit','Closing', 'clos_dc']
+)
+pivot['Opening'] = pivot['Opening'].apply(lambda x: x if x>=0 else -x)
+pivot['Closing'] = pivot['Closing'].apply(lambda x: x if x>=0 else -x)
+
 json = pivot.to_json(orient='table')
 print(pivot)
 print(json)
