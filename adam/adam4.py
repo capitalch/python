@@ -26,7 +26,7 @@ def trialBalance(data):
     df = pd.DataFrame(data)
     pivot = pd.pivot_table(df, index=["accCode", "accName", "accType"], columns=["dc"],
                        values="amount", aggfunc=np.sum, fill_value=0)
-    print(pivot)
+    
     pivot.rename(
         columns={
             'O': 'Opening',
@@ -36,22 +36,19 @@ def trialBalance(data):
         inplace=True
     )
     pivot['Closing'] = pivot['Opening'] + pivot['Debit'] - pivot['Credit']
-    # pivot.loc['total'] = pivot.select_dtypes(pd.np.number).sum() # for summary
-    # pivot.loc['Total',:]= df.sum(axis=1)
-    # pivot.loc['total'] = pivot["Closing"].sum() # for summary
 
     pivot.loc['Total', 'Closing'] = pivot['Closing'].sum()
     pivot.loc['Total', 'Debit'] = pivot['Debit'].sum()
     pivot.loc['Total', 'Credit'] = pivot['Credit'].sum()
     pivot.loc['Total', 'Opening'] = pivot['Opening'].sum()
     
-    pivot['clos_dc'] = pivot['Closing'].apply(lambda x: 'Dr' if x >= 0 else 'Cr')
+    pivot['Closing_dc'] = pivot['Closing'].apply(lambda x: 'Dr' if x >= 0 else 'Cr')
     pivot['Closing'] = pivot['Closing'].apply(lambda x: x if x>=0 else -x) # remove minus sign
     
-    pivot['open_dc'] = pivot['Opening'].apply(lambda x: 'Dr' if x >= 0 else 'Cr')
+    pivot['Opening_dc'] = pivot['Opening'].apply(lambda x: 'Dr' if x >= 0 else 'Cr')
     pivot['Opening'] = pivot['Opening'].apply(lambda x: x if x>=0 else -x) # remove minus sign
     
-    pivot = pivot.reindex(columns= ['Opening', 'open_dc', 'Debit', 'Credit', 'Closing', 'clos_dc'])
+    pivot = pivot.reindex(columns= ['Opening', 'Opening_dc', 'Debit', 'Credit', 'Closing', 'Closing_dc'])
     
     print(pivot)
     j = pivot.to_json(orient='table')
