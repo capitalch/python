@@ -8,16 +8,26 @@ from psycopg2.extras import RealDictCursor, DictCursor
 def execSql(cursor):
     out = None
     sqlString = '''
-        with temp1 as (
-            select a."accCode", a."accName", a."accType", t."dc", t."amount"
-                from "AccM" a join "TranD" t on a."id" = t."accId"
-                    where a."accLeaf" in ('Y', 'L')
-                union
-                    select a."accCode", a."accName", a."accType",'O' as dc, CASE WHEN b."dc" = 'D' THEN b."amount" else -b."amount" END
-                        from "AccM" a join "AccOpBal" b on a."id" = b."accId")
-        select "accCode", "accName", "accType", sum("amount") as amount, "dc" from
-	        temp1 group by "accCode", "accName", "accType", "dc"
-				        order by "accType" '''
+    with cte1 as (
+	select a."id" as id1, b."id" as id2, a."accCode", a."accName", a."accType", a."accLeaf"
+		from "AccM" a join "AccM" b on a."id" = b."parentId"
+			where a."accLeaf" in ('L')
+		union all
+	select "id" as id1,"id" as id2, "accCode", "accName", "accType", "accLeaf"
+		from "AccM" where "accLeaf" = 'Y'),
+    cte2 as (
+        select "accId", "dc", "amount"
+            from "TranD"
+                union all
+            select "accId", 'O' as dc, CASE WHEN "dc" = 'D' THEN "amount" else -"amount" END as amount
+                from "AccOpBal"
+    )
+
+    select  a."id1" as id, a."accCode", a."accName", a."accType", a."accLeaf", "dc", sum(amount) as amount
+        from cte1 a join cte2 b
+            on a."id2" = b."accId"
+                group by "id", a."accCode", a."accName", a."accType", a."accLeaf", b."dc"
+                    order by a."accType", a."accCode", a."accName", b."dc" '''
     cursor.execute(sqlString)
     out = cursor.fetchall()
     return out
