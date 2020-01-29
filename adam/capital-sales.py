@@ -16,6 +16,11 @@ def get_amount(row):
 
 pd.options.display.float_format = '{:,.0f}'.format
 
+conn = sqlanydb.connect(uid='dba', pwd='sql', eng='server', dbn='sony', host='kushserver' )
+cur = conn.cursor()
+cur.execute('update adjustment set remarks = 'adj1' where adj_id = 3)
+cur.commit()
+
 dfa = pd.read_sql_query(sql, getconn('capi2013'))
 dfa['month'] = pd.to_datetime(dfa['date']).dt.month
 dfa['year'] =  pd.to_datetime(dfa['date']).dt.year
