@@ -1,5 +1,16 @@
 import simplejson as json
+from nested_lookup import nested_lookup
 import re
+
+myDict = {
+    "debit": 2000,
+    "debits":[
+        {"debit":100},
+        {"debit":200}
+    ]
+}
+
+print(nested_lookup('debit', myDict))
 
 def extractAmount(s):
     amtList = re.findall('\d*\.?\d+',s)
