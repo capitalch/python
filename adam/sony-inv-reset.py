@@ -71,7 +71,7 @@ op_bal= 0;'''
 try:
     connection = sqlanydb.connect(uid='dba', pwd='sql', eng='server', dbn='sony', host='kushserver' )
     cur = connection.cursor()
-    # cur.execute(sql)
+    cur.execute(sql)
     cur.execute(sql1)
     cur.execute(sql2)
     cur.execute(sql3)
