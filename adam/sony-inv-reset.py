@@ -51,22 +51,12 @@ truncate table adjustment;
 CALL sa_reset_identity( 'adjustment', 'DBA', 0 );'''
 
 sql5='''
-update inv_main set
-job_booking = 0,
-loan_bal= 0,
-cust_pending= 0,
-cust_cancelled= 0,
-cust_booktodate= 0,
-cust_billtodate= 0,
-supp_pending= 0,
-supp_rectodate= 0,
-supp_ordtodate= 0,
-supp_cancelled= 0,
-supp_currorder= 0,
-adjust= 0,
-cr= 0,
-db= 0,
-op_bal= 0;'''
+truncate table inv_main;
+CALL sa_reset_identity( 'inv_main', 'DBA', 0 );
+'''
+sql6 = '''
+alter table inv_master alter part_code char(11)
+'''
 
 try:
     connection = sqlanydb.connect(uid='dba', pwd='sql', eng='server', dbn='sony', host='kushserver' )
@@ -77,6 +67,7 @@ try:
     cur.execute(sql3)
     cur.execute(sql4)
     cur.execute(sql5)
+    cur.execute(sql6)
     connection.commit()
 except(Exception) as error:
     print('Error', error)
