@@ -6,13 +6,49 @@ from dateutil.parser import parse
 dt = parse('2020-02-14T00:00:00.000Z').date()
 print(dt)
 
-myDict = {
-    "debit": 2000,
-    "debits":[
-        {"debit":100},
-        {"debit":200}
-    ]
-}
+tableName = 'TranD'
+sqlObject = {"deletedIds": [1,2]}
+deletedIdList = sqlObject["deletedIds"]
+ret='('
+for x in deletedIdList:
+    ret = ret + str(x) + ','
+ret = ret.rstrip(',')+')'
+tup = tuple(deletedIdList)
+st = str(tup)
+sql =  f''' delete from {tableName} where id in{st}'''
+sql1 = sql
+# data = {
+#     'tranDate': '2020-12-12',
+#     'amount': 2223,
+#     'refNo': 'abc',
+#     'remarks': 'def',
+#     'id': 356
+# }
+# tableName = 'TranH'
+
+# def getUpdateKeyValues(data):
+#     str = ''
+#     for it in data:
+#         str = str + f''' "{it}" = '{data[it]}', '''
+#     str = (str.strip())[:-1]
+#     return('set ' + str)
+
+# sql = f''' update "{tableName}"  
+#     {getUpdateKeyValues(data)}
+#     where "id" = {data['id']}
+# '''
+
+
+
+
+
+# myDict = {
+#     "debit": 2000,
+#     "debits":[
+#         {"debit":100},
+#         {"debit":200}
+#     ]
+# }
 
 # print(nested_lookup('debit', myDict))
 
