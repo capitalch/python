@@ -1,6 +1,10 @@
 import simplejson as json
-from nested_lookup import nested_lookup
+# from nested_lookup import nested_lookup
 import re
+from dateutil.parser import parse
+
+dt = parse('2020-02-14T00:00:00.000Z').date()
+print(dt)
 
 myDict = {
     "debit": 2000,
@@ -10,7 +14,7 @@ myDict = {
     ]
 }
 
-print(nested_lookup('debit', myDict))
+# print(nested_lookup('debit', myDict))
 
 def extractAmount(s):
     amtList = re.findall('\d*\.?\d+',s)
