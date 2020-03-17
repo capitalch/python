@@ -2,17 +2,25 @@ import simplejson as json
 from nested_lookup import nested_lookup
 import re
 
-tableName = 'TranD'
-sqlObject = {"deletedIds": [1,2]}
-deletedIdList = sqlObject["deletedIds"]
-ret='('
-for x in deletedIdList:
-    ret = ret + str(x) + ','
-ret = ret.rstrip(',')+')'
-tup = tuple(deletedIdList)
-st = str(tup)
-sql =  f''' delete from {tableName} where id in{st}'''
-sql1 = sql
+# Replace nested if-else with dict
+logic = {
+    'N': {
+        'N': lambda: print('N', 'N'), 'Y': lambda: print('N', 'Y'), 'L': lambda: print('N', 'L'), 'S': lambda: print('N', 'S')
+    }
+}
+
+logic['N']['Y']()
+# tableName = 'TranD'
+# sqlObject = {"deletedIds": [1,2]}
+# deletedIdList = sqlObject["deletedIds"]
+# ret='('
+# for x in deletedIdList:
+#     ret = ret + str(x) + ','
+# ret = ret.rstrip(',')+')'
+# tup = tuple(deletedIdList)
+# st = str(tup)
+# sql =  f''' delete from {tableName} where id in{st}'''
+# sql1 = sql
 # data = {
 #     'tranDate': '2020-12-12',
 #     'amount': 2223,
@@ -29,13 +37,10 @@ sql1 = sql
 #     str = (str.strip())[:-1]
 #     return('set ' + str)
 
-# sql = f''' update "{tableName}"  
+# sql = f''' update "{tableName}"
 #     {getUpdateKeyValues(data)}
 #     where "id" = {data['id']}
 # '''
-
-
-
 
 
 # myDict = {
@@ -49,14 +54,16 @@ sql1 = sql
 # print(nested_lookup('debit', myDict))
 
 def extractAmount(s):
-    amtList = re.findall('\d*\.?\d+',s)
-    return "".join(amtList)  
+    amtList = re.findall('\d*\.?\d+', s)
+    return "".join(amtList)
+
+
 # creditAmount':'%u20B9 12,000.20
 credits = {"accountName": "", "creditAmount": "%u20B9 1,002.32"}
-remList = [',','%u20B9', ' ']
+remList = [',', '%u20B9', ' ']
 amount = credits["creditAmount"]
 for i in remList:
-    amount = amount.replace(i,'')
+    amount = amount.replace(i, '')
 # amt = amount.encode('ascii', 'ignore')
 # amount = extractAmount(credits["creditAmount"])
 print(amount)
@@ -207,7 +214,6 @@ select id, "accCode", "parentId", sum(amount) as amount
 #         print("PostgreSQL connection is closed")
 
 
-
 # def escapeDoubleQuotes(match):
 #     match = match.group()
 #     s1 = match[1:-1] # gives the string excluding first and last char
@@ -219,13 +225,20 @@ select id, "accCode", "parentId", sum(amount) as amount
 # print(b)
 
 a = '"name":"Susha"nt", "address":"12 J.l", "phone":12112'
+
+
 def escapeDoubleQuotes(match):
     match = match.group()
-    s1 = match[1:-1] # gives the string excluding first and last char
-    s2 = s1.replace('"','\\"') # replace all " with \". Need to give \\ instead of \
-    s3 = match[0]+s2+match[-1] # put back the first and last char in the replaced string
+    s1 = match[1:-1]  # gives the string excluding first and last char
+    s2 = s1.replace(
+        '"', '\\"')  # replace all " with \". Need to give \\ instead of \
+    s3 = match[0]+s2 + \
+        match[-1]  # put back the first and last char in the replaced string
     return s3
+
+
 tokens = a.split(',')
+
 
 def processToken(token):
     keyValue = token.split(':')
@@ -240,6 +253,7 @@ def processToken(token):
     keyValue[1] = value
     token = ':'.join(keyValue)
     return token
+
 
 newTokens = map(processToken, tokens)
 
@@ -264,7 +278,6 @@ m = '''{
 # import ast
 # res = json.loads(json.dumps(m))
 # print(json.dumps(res))
-import re
 phone = "2004-959-559 # This is 1 Phone Number"
 num = re.sub(r'\w', "X", phone)
 print("Phone Num : ", num)
