@@ -1,19 +1,65 @@
 import simplejson as json
-# from nested_lookup import nested_lookup
-import re
-from dateutil.parser import parse
+import demjson as demjson
 
-dt = parse('2020-02-14T00:00:00.000Z').date()
-print(dt)
+import codecs
+s = codecs.encode('hjj6AZ@745', 'rot13')
+l = codecs.decode(s,'rot13')
+print(s)
 
-# Replace nested if-else with dict
-logic = {
-    'N': {
-        'N': lambda: print('N', 'N'), 'Y': lambda: print('N', 'Y'), 'L': lambda: print('N', 'L'), 'S': lambda: print('N', 'S')
-    }
-}
 
-logic['N']['Y']()
+# import jwt
+# import random
+# import string
+
+# def random_string_generator(str_size, allowed_chars):
+#     return ''.join(random.choice(allowed_chars) for x in range(str_size))
+
+# chars = string.ascii_letters + string.punctuation + string.digits
+# size = 8
+# print(chars)
+
+# print(random_string_generator(size, chars))
+
+# val = ''
+# valueDict = demjson.decode(val)
+# print(valueDict)
+
+# JWT_SECRET = 'secret'
+# JWT_ALGORITHM = 'HS256'
+# JWT_EXP_DELTA_SECONDS = 20
+
+# payload = {
+#     'user_id': 'abcd',
+#     'exp': datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)
+# }
+# jwt_token = jwt.encode(payload, JWT_SECRET, JWT_ALGORITHM)
+
+# payload1 = jwt.decode(jwt_token, JWT_SECRET,
+#                       algorithms=[JWT_ALGORITHM])
+
+# print(jwt_token)
+
+# import bcrypt
+# import base64
+# credentials = 'c3NzOiQyYSQxMCR5ZW9aSVdKLzBSUkkwQ3JBclEuYmwuUDMvSWRud1VudExHaEU0eldiQXZjZm4zaWFKcHBsbQ=='
+# uidPwd =base64.b64decode(credentials).decode('utf-8')
+# uidPwdArr = uidPwd.split(':')
+# uid = uidPwdArr[0]
+# password = uidPwdArr[1]
+
+# pwd = 'superAdmin'.encode('utf-8')
+# salt = bcrypt.gensalt(rounds=12)
+# pwdHash = bcrypt.hashpw(pwd,salt).decode('utf-8')
+# # b'$2b$12$nAXGJ.Ji5v0vXl5NAScIQuSdbjIPehLGjGGcatY7NHZK4Nnxf0i7a'
+# print(pwdHash)
+# hashed = '$2b$12$MlC4/PqV2OoD8.Csg2ode.jBjVvi6fkeNO5GF9hdq8yzVxZHmVBJ6'
+# if bcrypt.checkpw('superAdmin'.encode('utf-8'), hashed.encode('utf-8')):
+#     print("match")
+# else:
+#     print("does not match")
+
+
+# logic['N']['Y']()
 # tableName = 'TranD'
 # sqlObject = {"deletedIds": [1,2]}
 # deletedIdList = sqlObject["deletedIds"]
@@ -57,20 +103,20 @@ logic['N']['Y']()
 
 # print(nested_lookup('debit', myDict))
 
-def extractAmount(s):
-    amtList = re.findall('\d*\.?\d+', s)
-    return "".join(amtList)
+# def extractAmount(s):
+#     amtList = re.findall('\d*\.?\d+', s)
+#     return "".join(amtList)
 
 
-# creditAmount':'%u20B9 12,000.20
-credits = {"accountName": "", "creditAmount": "%u20B9 1,002.32"}
-remList = [',', '%u20B9', ' ']
-amount = credits["creditAmount"]
-for i in remList:
-    amount = amount.replace(i, '')
-# amt = amount.encode('ascii', 'ignore')
-# amount = extractAmount(credits["creditAmount"])
-print(amount)
+# # creditAmount':'%u20B9 12,000.20
+# credits = {"accountName": "", "creditAmount": "%u20B9 1,002.32"}
+# remList = [',', '%u20B9', ' ']
+# amount = credits["creditAmount"]
+# for i in remList:
+#     amount = amount.replace(i, '')
+# # amt = amount.encode('ascii', 'ignore')
+# # amount = extractAmount(credits["creditAmount"])
+# print(amount)
 # myDict = {
 #     "tableName": "cust",
 #     "data": {
@@ -170,17 +216,17 @@ print(amount)
 # with open('config.json') as json_file:
 #     cfg = json.load(json_file)
 
-sql = '''
-set search_path to test; 
-with RECURSIVE cte 
-    as ( select m."id", m."accCode", m."parentId", t."amount" from "AccTran" t 
-        join "AccM" m on t."accCode" = m."accCode" 
-    union select a.id,a."accCode", a."parentId"
-        , ( cte."amount") as "amount" from "AccM" a join cte on cte."parentId" = a.id ) 
-select id, "accCode", "parentId", sum(amount) as amount
-    from cte 
-        group by id, "accCode", "parentId" order by cte.id
-'''
+# sql = '''
+# set search_path to test;
+# with RECURSIVE cte
+#     as ( select m."id", m."accCode", m."parentId", t."amount" from "AccTran" t
+#         join "AccM" m on t."accCode" = m."accCode"
+#     union select a.id,a."accCode", a."parentId"
+#         , ( cte."amount") as "amount" from "AccM" a join cte on cte."parentId" = a.id )
+# select id, "accCode", "parentId", sum(amount) as amount
+#     from cte
+#         group by id, "accCode", "parentId" order by cte.id
+# '''
 
 # import psycopg2
 # from psycopg2.extras import RealDictCursor
@@ -228,41 +274,41 @@ select id, "accCode", "parentId", sum(amount) as amount
 # b = re.sub(r'^("| *")[\s\S]*"[\s\S]*"$', escapeDoubleQuotes, a)
 # print(b)
 
-a = '"name":"Susha"nt", "address":"12 J.l", "phone":12112'
+# a = '"name":"Susha"nt", "address":"12 J.l", "phone":12112'
 
 
-def escapeDoubleQuotes(match):
-    match = match.group()
-    s1 = match[1:-1]  # gives the string excluding first and last char
-    s2 = s1.replace(
-        '"', '\\"')  # replace all " with \". Need to give \\ instead of \
-    s3 = match[0]+s2 + \
-        match[-1]  # put back the first and last char in the replaced string
-    return s3
+# def escapeDoubleQuotes(match):
+#     match = match.group()
+#     s1 = match[1:-1]  # gives the string excluding first and last char
+#     s2 = s1.replace(
+#         '"', '\\"')  # replace all " with \". Need to give \\ instead of \
+#     s3 = match[0]+s2 + \
+#         match[-1]  # put back the first and last char in the replaced string
+#     return s3
 
 
-tokens = a.split(',')
+# tokens = a.split(',')
 
 
-def processToken(token):
-    keyValue = token.split(':')
-    value = keyValue[1]
-    value = re.sub(r'^("| *")[\s\S]*"[\s\S]*"$', escapeDoubleQuotes, value)
-    # ^             :start with
-    # ("| *")       :" or zero or more space followed by a"
-    # [\s\S]*        : Any character including newLine occurs zero or many times. A dot in the place will not work because dot does not include newline
-    # "             : In between there is a "
-    # [\s\S]*        : Zero or more chars
-    # "$            : end is a "
-    keyValue[1] = value
-    token = ':'.join(keyValue)
-    return token
+# def processToken(token):
+#     keyValue = token.split(':')
+#     value = keyValue[1]
+#     value = re.sub(r'^("| *")[\s\S]*"[\s\S]*"$', escapeDoubleQuotes, value)
+#     # ^             :start with
+#     # ("| *")       :" or zero or more space followed by a"
+#     # [\s\S]*        : Any character including newLine occurs zero or many times. A dot in the place will not work because dot does not include newline
+#     # "             : In between there is a "
+#     # [\s\S]*        : Zero or more chars
+#     # "$            : end is a "
+#     keyValue[1] = value
+#     token = ':'.join(keyValue)
+#     return token
 
 
-newTokens = map(processToken, tokens)
+# newTokens = map(processToken, tokens)
 
-a = ",".join(newTokens)
-print(a)
+# a = ",".join(newTokens)
+# print(a)
 # dict = {
 #     "a": '''1''',
 #     "b": '''2'''
@@ -275,13 +321,13 @@ print(a)
 # list = re.findall('\d*\.?\d+',n)
 # out = "".join(list)
 # print(out)
-m = '''{
-    "a":"ab"c",
-     "b":"cef" 
-    }'''
+# m = '''{
+#     "a":"ab"c",
+#      "b":"cef"
+#     }'''
 # import ast
 # res = json.loads(json.dumps(m))
 # print(json.dumps(res))
-phone = "2004-959-559 # This is 1 Phone Number"
-num = re.sub(r'\w', "X", phone)
-print("Phone Num : ", num)
+# phone = "2004-959-559 # This is 1 Phone Number"
+# num = re.sub(r'\w', "X", phone)
+# print("Phone Num : ", num)
