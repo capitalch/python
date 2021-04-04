@@ -8,13 +8,31 @@ from psycopg2.extras import RealDictCursor, DictCursor
 def execSql(cursor):
     out = None
     sqlString = '''
+    set search_path to demounit1;
+    -- invoice level
     with cte1 as (
-	select a."id" as id1, b."id" as id2, a."accCode", a."accName", a."accType", a."accLeaf"
-		from "AccM" a join "AccM" b on a."id" = b."parentId"
-			where a."accLeaf" in ('L')
-		union all
-	select "id" as id1,"id" as id2, "accCode", "accName", "accType", "accLeaf"
-		from "AccM" where "accLeaf" = 'Y'),
+	select  "tranDate", "autoRefNo", "userRefNo", "tranType", "gstin",d."amount" - "cgst" - "sgst" - "igst" as "aggregate", "cgst", "sgst", "igst", d."amount",
+            "accName",h."remarks", "dc", "lineRefNo", d."remarks" as "lineRemarks"
+        from "TranH" h
+            join "TranD" d
+                on h."id" = d."tranHeaderId"
+            join "ExtGstTranD" e
+                on d."id" = e."tranDetailsId"
+            join "AccM" a
+                on a."id" = d."accId"
+			join "TranTypeM" t
+				on t."id" = h."tranTypeId"
+        where
+            ("cgst" <> 0 or
+            "sgst" <> 0 or
+            "igst" <> 0) and
+			"isInput" = false and
+			"finYearId" = 2021
+--             "finYearId" = %(finYearId)s and
+--             "branchId" = %(branchId)s and
+--             ("tranDate" between %(fromDate)s and %(toDate)s)
+        
+        order by "tranDate", h."id"),
     cte2 as (
         select "accId", "dc", "amount"
             from "TranD"
@@ -67,7 +85,7 @@ def trialBalance(data):
     return dt
 try:
     connection = None
-    with open('config.json') as f:
+    with open('adam/config.json') as f:
         cfg = json.load(f)
     connection = psycopg2.connect(
         user=cfg["user"], password=cfg["password"], host=cfg["host"], port=cfg["port"], database=cfg["database"])

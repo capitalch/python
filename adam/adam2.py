@@ -15,12 +15,12 @@ jDataString = '''[
 }]
     
     '''
-df = pd.read_excel('sales-funnel.xlsx')
-df["Status"] = df["Status"].astype("category")
-df["Status"].cat.set_categories(
-    ["won", "pending", "presented", "declined"], inplace=True)
-df1 = pd.pivot_table(df, index=["Manager", "Rep"], values=[
-                     "Price", "Quantity"], aggfunc=np.sum, columns="Product")
+# df = pd.read_excel('sales-funnel.xlsx')
+# df["Status"] = df["Status"].astype("category")
+# df["Status"].cat.set_categories(
+#     ["won", "pending", "presented", "declined"], inplace=True)
+# df1 = pd.pivot_table(df, index=["Manager", "Rep"], values=[
+#                      "Price", "Quantity"], aggfunc=np.sum, columns="Product")
 # print(df)
 # print(df1)
 d1 = [
