@@ -9,9 +9,9 @@ def execSql(cursor):
     out = None
     sqlString = '''
     set search_path to demounit1;
-    -- invoice level
+    -- GstInputAll (ExtGstTranD only), GstOutputAll (ExtGstTrand) based on "isInput"
     with cte1 as (
-	select  "tranDate", "autoRefNo", "userRefNo", "tranType", "gstin",d."amount" - "cgst" - "sgst" - "igst" as "aggregate", "cgst", "sgst", "igst", d."amount",
+	select  "tranDate", "autoRefNo", "userRefNo", "tranType", "gstin", d."amount" - "cgst" - "sgst" - "igst" as "aggregate", "cgst", "sgst", "igst", d."amount",
             "accName",h."remarks", "dc", "lineRefNo", d."remarks" as "lineRemarks"
         from "TranH" h
             join "TranD" d
@@ -33,12 +33,105 @@ def execSql(cursor):
 --             ("tranDate" between %(fromDate)s and %(toDate)s)
         
         order by "tranDate", h."id"),
+    
+    -- GstNetSales (considering only table SalePurchaseDetails)
     cte2 as (
-        select "accId", "dc", "amount"
-            from "TranD"
-                union all
-            select "accId", 'O' as dc, CASE WHEN "dc" = 'D' THEN "amount" else -"amount" END as amount
-                from "AccOpBal"
+        select  "tranDate", "autoRefNo", "userRefNo", "tranType", 
+        (select "gstin" from "ExtGstTranD" where "tranDetailsId" = d."id") as "gstin",
+        "gstRate",
+        CASE WHEN "tranTypeId" = 4 THEN (s."amount" - "cgst" - "sgst" - "igst") ELSE -(s."amount" - "cgst" - "sgst" - "igst") END as "aggregate",
+        CASE WHEN "tranTypeId" = 4 THEN "cgst" ELSE -"cgst" END as "cgst",
+        CASE WHEN "tranTypeId" = 4 THEN "sgst" ELSE -"sgst" END as "sgst",
+        CASE WHEN "tranTypeId" = 4 THEN "igst" ELSE -"igst" END as "igst",
+        CASE WHEN "tranTypeId" = 4 THEN s."amount" ELSE -s."amount" END as "amount",
+        "accName", h."remarks", "dc", "lineRefNo", d."remarks" as "lineRemarks"
+                from "TranH" h
+                    join "TranD" d
+                        on h."id" = d."tranHeaderId"
+        --             join "ExtGstTranD" e
+        --                 on d."id" = e."tranDetailsId"
+                    join "AccM" a
+                        on a."id" = d."accId"
+                    join "TranTypeM" t
+                        on t."id" = h."tranTypeId"
+                    join "SalePurchaseDetails" s
+                        on d."id" = s."tranDetailsId"
+                where
+                    ("cgst" <> 0 or
+                    "sgst" <> 0 or
+                    "igst" <> 0) and
+                    "tranTypeId" in (4,9) and
+        --			"isInput" = false and
+                    "finYearId" = 2021
+        --             "finYearId" = %(finYearId)s and
+        --             "branchId" = %(branchId)s and
+        --             ("tranDate" between %(fromDate)s and %(toDate)s)        
+            order by "tranDate", h."id"
+    ),
+
+    -- GstNetPurchases (considering only table SalePurchaseDetails)
+    cte3 as (
+        select  "tranDate", "autoRefNo", "userRefNo", "tranType", 
+        (select "gstin" from "ExtGstTranD" where "tranDetailsId" = d."id") as "gstin",
+        "gstRate",
+        CASE WHEN "tranTypeId" = 5 THEN (s."amount" - "cgst" - "sgst" - "igst") ELSE -(s."amount" - "cgst" - "sgst" - "igst") END as "aggregate",
+        CASE WHEN "tranTypeId" = 5 THEN "cgst" ELSE -"cgst" END as "cgst",
+        CASE WHEN "tranTypeId" = 5 THEN "sgst" ELSE -"sgst" END as "sgst",
+        CASE WHEN "tranTypeId" = 5 THEN "igst" ELSE -"igst" END as "igst",
+        CASE WHEN "tranTypeId" = 5 THEN s."amount" ELSE -s."amount" END as "amount",
+        "accName", h."remarks", "dc", "lineRefNo", d."remarks" as "lineRemarks"
+                from "TranH" h
+                    join "TranD" d
+                        on h."id" = d."tranHeaderId"
+        --             join "ExtGstTranD" e
+        --                 on d."id" = e."tranDetailsId"
+                    join "AccM" a
+                        on a."id" = d."accId"
+                    join "TranTypeM" t
+                        on t."id" = h."tranTypeId"
+                    join "SalePurchaseDetails" s
+                        on d."id" = s."tranDetailsId"
+                where
+                    ("cgst" <> 0 or
+                    "sgst" <> 0 or
+                    "igst" <> 0) and
+                    "tranTypeId" in (5,10) and
+        --			"isInput" = false and
+                    "finYearId" = 2021
+        --             "finYearId" = %(finYearId)s and
+        --             "branchId" = %(branchId)s and
+        --             ("tranDate" between %(fromDate)s and %(toDate)s)
+        
+        order by "tranDate", h."id"
+    )
+    cte4 as (
+        select  "tranDate", "autoRefNo", "userRefNo", "tranType", 
+        "gstin", "rate",
+        d."amount" - "cgst" - "sgst" - "igst" as "aggregate", "cgst", "sgst", "igst", d."amount",
+        "accName", h."remarks", "dc", "lineRefNo", d."remarks" as "lineRemarks"
+                from "TranH" h
+                    join "TranD" d
+                        on h."id" = d."tranHeaderId"
+                    join "ExtGstTranD" e
+                        on d."id" = e."tranDetailsId"
+                    join "AccM" a
+                        on a."id" = d."accId"
+                    join "TranTypeM" t
+                        on t."id" = h."tranTypeId"
+        --			join "SalePurchaseDetails" s
+        --				on d."id" = s."tranDetailsId"
+                where
+                    ("cgst" <> 0 or
+                    "sgst" <> 0 or
+                    "igst" <> 0) and
+                    "rate" is not null and -- When it is not a sale / purchase i.e voucher, then "gstRate" value exists in "ExtGstTranD" table otherwise not
+                    "isInput" = true and -- Only applicable for GST through vouchers
+                    "finYearId" = 2021
+        --             "finYearId" = %(finYearId)s and
+        --             "branchId" = %(branchId)s and
+        --             ("tranDate" between %(fromDate)s and %(toDate)s)
+                
+        order by "tranDate", h."id"
     )
 
     select  a."id1" as id, a."accCode", a."accName", a."accType", a."accLeaf", "dc", sum(amount) as amount

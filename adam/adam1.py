@@ -1,10 +1,72 @@
-import simplejson as json
-import demjson as demjson
 
-import codecs
-s = codecs.encode('hjj6AZ@745', 'rot13')
-l = codecs.decode(s,'rot13')
-print(s)
+# import pandas as pd
+# import io
+# from xlsxwriter.workbook import Workbook
+# from decimal import *
+
+items = ['ddd', 'eee', 'fff']
+valueDict = {}
+sql = '''
+        select "id", "hsn", "info", "label"
+        from "ProductM"
+        where "label" ILIKE ANY(array[someArgs])
+'''                                                     # 'ddd', 'eee', 'fff'
+some = ''
+for index, item in enumerate(items):
+        some = some + f" '%%' || '{item}' || '%%' ,"
+# some = some.replace(',','',-1)
+some = some.rstrip(",")
+sql = sql.replace('someArgs', some)
+print(some)
+# sql = '''
+# select "id", "hsn", "info", "label", "productCode", "upcCode", "gstRate"
+# 		    from "ProductM"
+#         where "label" ILIKE '%%' || %(arg)s || '%%'
+# '''
+# temp = ''
+
+# for index, item in enumerate(items):        
+#         sqlX = sql.replace('arg', f'arg{str(index)}' )
+#         # temp = temp +' union ' + sqlX
+#         temp = f'{temp} union {sqlX}'
+#         valueDict['arg'+str(index)] = item
+# temp = temp.replace(' union ','', 1)
+# print(temp, valueDict)
+
+# cars = {'Brand': ['Honda Civic','Toyota Corolla','Ford Focus','Audi A4'],
+#         'Price': [ Decimal('32000'),Decimal('35000'),Decimal('37000'),Decimal('45000')]
+#         }
+
+# df = pd.DataFrame(cars, columns = ['Brand', 'Price'])
+# df.to_excel ('test.xlsx', index = False, header=True)
+
+# writer = pd.ExcelWriter('demo1.xlsx', engine='xlsxwriter')
+# writer.save()
+
+# writer = pd.ExcelWriter(output,  engine='xlsxwriter')
+# contents = output.getvalue()
+# output.close()
+
+
+# import simplejson as json
+# import demjson as demjson
+# import bcrypt
+# import re
+
+# regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+# email = 'ss#ss.vo'
+
+# if(re.search(regex,email)):
+#     ret = True
+# else:
+#     ret = False
+
+# print(ret)
+
+# import codecs
+# s = codecs.encode('hjj6AZ@745', 'rot13')
+# l = codecs.decode(s,'rot13')
+# print(s)
 
 
 # import jwt
@@ -47,10 +109,10 @@ print(s)
 # uid = uidPwdArr[0]
 # password = uidPwdArr[1]
 
-# pwd = 'superAdmin'.encode('utf-8')
+# pwd = 's'.encode('utf-8')
 # salt = bcrypt.gensalt(rounds=12)
 # pwdHash = bcrypt.hashpw(pwd,salt).decode('utf-8')
-# # b'$2b$12$nAXGJ.Ji5v0vXl5NAScIQuSdbjIPehLGjGGcatY7NHZK4Nnxf0i7a'
+# b'$2b$12$nAXGJ.Ji5v0vXl5NAScIQuSdbjIPehLGjGGcatY7NHZK4Nnxf0i7a'
 # print(pwdHash)
 # hashed = '$2b$12$MlC4/PqV2OoD8.Csg2ode.jBjVvi6fkeNO5GF9hdq8yzVxZHmVBJ6'
 # if bcrypt.checkpw('superAdmin'.encode('utf-8'), hashed.encode('utf-8')):
