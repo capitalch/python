@@ -4,20 +4,23 @@
 # from xlsxwriter.workbook import Workbook
 # from decimal import *
 
-items = ['ddd', 'eee', 'fff']
-valueDict = {}
-sql = '''
-        select "id", "hsn", "info", "label"
-        from "ProductM"
-        where "label" ILIKE ANY(array[someArgs])
-'''                                                     # 'ddd', 'eee', 'fff'
-some = ''
-for index, item in enumerate(items):
-        some = some + f" '%%' || '{item}' || '%%' ,"
-# some = some.replace(',','',-1)
-some = some.rstrip(",")
-sql = sql.replace('someArgs', some)
-print(some)
+print('Hash of chw/21/2021:', hash('chw/21/2021'))
+
+
+# items = ['ddd', 'eee', 'fff']
+# valueDict = {}
+# sql = '''
+#         select "id", "hsn", "info", "label"
+#         from "ProductM"
+#         where "label" ILIKE ANY(array[someArgs])
+# '''                                                     # 'ddd', 'eee', 'fff'
+# some = ''
+# for index, item in enumerate(items):
+#         some = some + f" '%%' || '{item}' || '%%' ,"
+# # some = some.replace(',','',-1)
+# some = some.rstrip(",")
+# sql = sql.replace('someArgs', some)
+# print(some)
 # sql = '''
 # select "id", "hsn", "info", "label", "productCode", "upcCode", "gstRate"
 # 		    from "ProductM"
