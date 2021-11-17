@@ -10,12 +10,19 @@ pdf.output('tut1.pdf')
 # import io
 # from xlsxwriter.workbook import Workbook
 # from decimal import *
+<<<<<<< HEAD
 # from reportlab.pdfgen import canvas
 # import os
 # c = canvas.Canvas("hello.pdf")
 # c.drawString(100,700, 'First time using reportlab')
 # c.save()
 # os.startfile('hello.pdf')
+=======
+
+print('Hash of chw/21/2021:', hash('chw/21/2021'))
+
+
+>>>>>>> 00844909c2b6c44913dcd9b444aa0c1ec1b24f23
 # items = ['ddd', 'eee', 'fff']
 # valueDict = {}
 # sql = '''
