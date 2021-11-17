@@ -1,10 +1,130 @@
+import socketio
+# import requests
+
+
+def initSocket(socUrl=None, pointId=None, token=None):
+    url = socUrl if socUrl is not None else 'http://localhost:5000'
+
+    sio = socketio.Client(reconnection=True)
+
+    @sio.on('connect')
+    def on_connect():
+        print('connected')
+
+    pid = pointId if pointId is not None else sio.sid
+    sio.connect(url, headers={'pointId': pid},  transports=('websocket'))
+    return(sio)
+
+
+def ibukiEmit(socket, message, data):
+    socket.emit('cs-socket-emit', (message, data))
+
+
+def ibukiFilterOn(socket, message, f):
+    socket.emit('cs-socket-filter-on', message)
+
+    @socket.on(message)
+    def on_message(data):
+        f(data)
+
+
+def joinRoom(socket, room):
+    socket.emit('cs-join-room', room)
+
+
+def onReceiveData(socket, f):
+    @socket.on('sc-send')
+    def on_receive(message, data):
+        f(message, data)
+
+
+def onReceiveDataFromPoint(socket, f):
+    @socket.on('sc-send-to-point')
+    def on_sc_send_to_point(message, data, sourcePointId):
+        f(message, data, sourcePointId)
+
+
+sio = initSocket(pointId='pythonClient1')
+
+
+ibukiEmit(sio, 'PYTHON-MESSAGE1', {'foo': 'ABCD'})
+ibukiFilterOn(sio, 'REACT-APP1-MESSAGE', lambda data: print(data))
+joinRoom(sio, 'room1')
+onReceiveData(sio, lambda message, data:
+              print((message, data)))
+onReceiveDataFromPoint(sio, lambda message, data, sourcePointId:
+                       print((message, data, sourcePointId)))
+
+sio.wait()
+
+# sio = socketio.Client()
+# sio.connect('http://localhost:5000')
+# sio.emit('cs-socket-emit', 'REACT-APP-MESSAGE1', {
+#     'source': 'Python script'
+# })
+# sio.emit('cs-socket-emit', data=('REACT-APP-MESSAGE1', {
+#     'source': 'Python script'
+# }))
+# import datetime
+# firstTime = datetime.datetime.now()
+# print('some time')
+# laterTime = datetime.datetime.now()
+# difference = laterTime - firstTime
+# print(difference.total_seconds()/60)
+# arr = [1,2,3,4]
+# def calc(a):
+#     return(a+1)
+
+# ret = map(calc,arr)
+# print(list(ret))
+
+# def num2words(num):
+#     under_20 = ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen']
+#     tens = ['Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety']
+#     above_100 = {100: 'Hundred',1000:'Thousand', 100000:'Lakhs', 10000000:'Crores'}
+
+#     if num < 20:
+#          return under_20[(int)(num)]
+
+#     if num < 100:
+#         return tens[(int)(num/10)-2] + ('' if num%10==0 else ' ' + under_20[(int)(num%10)])
+
+#     # find the appropriate pivot - 'Million' in 3,603,550, or 'Thousand' in 603,550
+#     pivot = max([key for key in above_100.keys() if key <= num])
+
+#     return num2words((int)(num/pivot)) + ' ' + above_100[pivot] + ('' if num%pivot==0 else ' ' + num2words(num%pivot))
+
+# num="51222124.12"
+# print(num2words(int(num.split(".")[0])))
+# print(num2words(int(num.split(".")[1])))
+
+# from datetime import date
+# import datetime
+# from babel.numbers import format_currency
+# from num2words import num2words
+# d = 100111212.29
+# d1 = format_currency(d,'INR', locale='en_IN')
+# print(d1)
+# print(num2words(d,'en_IN', to='cardinal'))
+# num2words import num2words
+# d = 23333322.1
+# d1 = f'{d:,.2f}'
+# print(d1)
+# from copy import copy, deepcopy
+# x = datetime.datetime.strptime('2021-04-16','%Y-%m-%d')
+# y = x.strftime('%d/%m/%Y')
+# dict = {'a': 1}
+# cp = deepcopy(dict)
+
+# newDate = myDate.strftime('%d/%m/%Y')
+# print(y)
 
 # import pandas as pd
 # import io
 # from xlsxwriter.workbook import Workbook
 # from decimal import *
 
-print('Hash of chw/21/2021:', hash('chw/21/2021'))
+# print('Hash of chw/21/2021:', hash('chw/21/2021'))
 
 
 # items = ['ddd', 'eee', 'fff']
@@ -28,7 +148,7 @@ print('Hash of chw/21/2021:', hash('chw/21/2021'))
 # '''
 # temp = ''
 
-# for index, item in enumerate(items):        
+# for index, item in enumerate(items):
 #         sqlX = sql.replace('arg', f'arg{str(index)}' )
 #         # temp = temp +' union ' + sqlX
 #         temp = f'{temp} union {sqlX}'
