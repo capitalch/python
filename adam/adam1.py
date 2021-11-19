@@ -1,61 +1,91 @@
-import socketio
+from fpdf import FPDF
+from datetime import datetime, date
+
+pdf = FPDF()
+pdf.add_page()
+pdf.set_font("helvetica", "B", 16)
+pdf.cell(30, 10, "Hello World!",0,2)
+pdf.cell(30,10,"Next line", ln=1)
+pdf.alias_nb_pages()
+pdf.output("tuto1.pdf")
+
+def generate_receipt(date, amount):
+    pdf = FPDF(orientation='P', unit='pt', format='A4')
+    pdf.add_page()
+    pdf.set_font("Times", "B", 24)
+    pdf.cell(0, 80, "Purchase Receipt", 0, 1, "C")
+    pdf.set_font("Times", "B", 14)
+    pdf.cell(100, 25, "Payment Date:")
+    pdf.set_font("Times", "", 12)
+    pdf.cell(0, 25, "{}".format(date), 0, 1)
+    pdf.cell(0, 5, "", 0, 1)
+    pdf.set_font("Times", "B", 14)
+    pdf.cell(100, 25, "Payment Total:")
+    pdf.set_font("Times", "", 12)
+    pdf.cell(0, 25, "${}".format(amount), 0, 1)
+    return pdf.output('receipt.pdf')
+
+generate_receipt('22-02-02', 10000)
+
+# import fpdf
+# import socketio
 # import requests
 
 
-def initSocket(socUrl=None, pointId=None, token=None):
-    url = socUrl if socUrl is not None else 'http://localhost:5000'
+# def initSocket(socUrl=None, pointId=None, token=None):
+#     url = socUrl if socUrl is not None else 'http://localhost:5000'
 
-    sio = socketio.Client(reconnection=True)
+#     sio = socketio.Client(reconnection=True)
 
-    @sio.on('connect')
-    def on_connect():
-        print('connected')
+#     @sio.on('connect')
+#     def on_connect():
+#         print('connected')
 
-    pid = pointId if pointId is not None else sio.sid
-    sio.connect(url, headers={'pointId': pid},  transports=('websocket'))
-    return(sio)
-
-
-def ibukiEmit(socket, message, data):
-    socket.emit('cs-socket-emit', (message, data))
+#     pid = pointId if pointId is not None else sio.sid
+#     sio.connect(url, headers={'pointId': pid},  transports=('websocket'))
+#     return(sio)
 
 
-def ibukiFilterOn(socket, message, f):
-    socket.emit('cs-socket-filter-on', message)
-
-    @socket.on(message)
-    def on_message(data):
-        f(data)
+# def ibukiEmit(socket, message, data):
+#     socket.emit('cs-socket-emit', (message, data))
 
 
-def joinRoom(socket, room):
-    socket.emit('cs-join-room', room)
+# def ibukiFilterOn(socket, message, f):
+#     socket.emit('cs-socket-filter-on', message)
+
+#     @socket.on(message)
+#     def on_message(data):
+#         f(data)
 
 
-def onReceiveData(socket, f):
-    @socket.on('sc-send')
-    def on_receive(message, data):
-        f(message, data)
+# def joinRoom(socket, room):
+#     socket.emit('cs-join-room', room)
 
 
-def onReceiveDataFromPoint(socket, f):
-    @socket.on('sc-send-to-point')
-    def on_sc_send_to_point(message, data, sourcePointId):
-        f(message, data, sourcePointId)
+# def onReceiveData(socket, f):
+#     @socket.on('sc-send')
+#     def on_receive(message, data):
+#         f(message, data)
 
 
-sio = initSocket(pointId='pythonClient1')
+# def onReceiveDataFromPoint(socket, f):
+#     @socket.on('sc-send-to-point')
+#     def on_sc_send_to_point(message, data, sourcePointId):
+#         f(message, data, sourcePointId)
 
 
-ibukiEmit(sio, 'PYTHON-MESSAGE1', {'foo': 'ABCD'})
-ibukiFilterOn(sio, 'REACT-APP1-MESSAGE', lambda data: print(data))
-joinRoom(sio, 'room1')
-onReceiveData(sio, lambda message, data:
-              print((message, data)))
-onReceiveDataFromPoint(sio, lambda message, data, sourcePointId:
-                       print((message, data, sourcePointId)))
+# sio = initSocket(pointId='pythonClient1')
 
-sio.wait()
+
+# ibukiEmit(sio, 'PYTHON-MESSAGE1', {'foo': 'ABCD'})
+# ibukiFilterOn(sio, 'REACT-APP1-MESSAGE', lambda data: print(data))
+# joinRoom(sio, 'room1')
+# onReceiveData(sio, lambda message, data:
+#               print((message, data)))
+# onReceiveDataFromPoint(sio, lambda message, data, sourcePointId:
+#                        print((message, data, sourcePointId)))
+
+# sio.wait()
 
 # sio = socketio.Client()
 # sio.connect('http://localhost:5000')
@@ -123,10 +153,12 @@ sio.wait()
 # import io
 # from xlsxwriter.workbook import Workbook
 # from decimal import *
-
-# print('Hash of chw/21/2021:', hash('chw/21/2021'))
-
-
+# from reportlab.pdfgen import canvas
+# import os
+# c = canvas.Canvas("hello.pdf")
+# c.drawString(100,700, 'First time using reportlab')
+# c.save()
+# os.startfile('hello.pdf')
 # items = ['ddd', 'eee', 'fff']
 # valueDict = {}
 # sql = '''
