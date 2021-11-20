@@ -2,117 +2,40 @@
 from reportlab.lib.pagesizes import A4, letter
 from reportlab.lib.units import cm, inch, mm
 from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+from invoice import invoice
 
+def canvas_ex():
+    c = canvas.Canvas('hello.pdf')  # creates a file hello.pdf
+    c.translate(10 * mm, 10 * mm)  # moves the origin as x= 10mm, y = 10 mm
+    width, height = A4
+    print('Width:', width, ' height:', height)
+    c.setFont('Helvetica', 14)
+    # draws line starting from new origin which is 10mm, 10mm
+    c.line(0, 0, 0, 1.7*inch)
+    c.rect(0.2*inch, 0.2*inch, 1*inch, 1.5*inch, fill=0)  # draw a rectangle
+    # at point 10,10 draw string. There are drawRightString, drawCenterString
+    c.drawString(10, 10, 'Hello world')
+    c.showPage()  # ends the page and resets font, colors etc.
+    c.save()
 
-c = canvas.Canvas('hello.pdf')  # creates a file hello.pdf
-c.translate(10 * mm, 10 * mm)  # moves the origin as x= 10mm, y = 10 mm
-width, height = A4
-print('Width:', width, ' height:', height)
-c.setFont('Helvetica', 14)
-# draws line starting from new origin which is 10mm, 10mm
-c.line(0, 0, 0, 1.7*inch)
-c.rect(0.2*inch, 0.2*inch, 1*inch, 1.5*inch, fill=0)  # draw a rectangle
-# at point 10,10 draw string. There are drawRightString, drawCenterString
-c.drawString(10, 10, 'Hello world')
-c.showPage()  # ends the page and resets font, colors etc.
-c.save()
+def flowable_ex():
+    doc = SimpleDocTemplate("example_flowable.pdf",pagesize=A4,
+                        rightMargin=2*cm,leftMargin=2*cm,
+                        topMargin=2*cm,bottomMargin=2*cm)
+    my_text1 = "Lorem Ipsum has been the industry's \nstandard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+    my_text2 = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
+    para1 = Paragraph(my_text1,getSampleStyleSheet()['Normal'])
+    # para1.beginText(100,100)
+    doc.build([
+        # Paragraph(my_text1.replace("\n", "<br />"), getSampleStyleSheet()['Normal']),
+        para1,
+        Paragraph(my_text2, getSampleStyleSheet()['Normal'])
+        ])
+    print('ok')
 
-invoice = {
-    'companyInfo': {
-        'name': 'Capital Chowringhee Pvt Ltd',
-        'address1': '12 J.L. Nehru road',
-        'address2': '',
-        'pin': '700013',
-        'phone': '9831052332, 8910322267, 9163055161',
-        'email': 'capitalch@gmail.com',
-        'web': 'www.capital-chowringhee.com',
-        'gstin': '19AACCC5685L1Z3',
-        'pan': 'AACCC5685L'
-    },
-    'refNo': 'cardn/1111/21',
-    'tranDate': '2121-11-19',
-    'billTo': {
-        'name': 'Contrary to popular belief, Lorem',
-        'address1': 'It has roots in a piece of classical Latin literature from 45 BC, making',
-        'address2': 'it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College',
-        'pin': '7000065',
-        'phone': '9998744565',
-        'email': 'gggg.wait@gmail.com',
-        'gstin': '19AACCC5685L1M3'
-    },
-    'shipTo': {
-        'name': 'Contrary to popular belief, Lorem',
-        'address1': 'looked up one of the more obscure Latin words, consectetur',
-        'address2': 'going through the cites of the word in classical literature, discovered',
-        'pin': '7000069',
-        'phone': '9998743365',
-        'email': 'g22wait@gmail.com'
-    },
-    'items': [
-        {
-            'code': '1111',
-            'item': 'but the majority have suffered alteration in some',
-            'slNo': 'yuuyu66677777',
-            'hsn': '44454',
-            'qty': 1,
-            'price': 12000,
-            'gstRate':18,
-            'cgst': 1000,
-            'sgst': 1000,
-            'igst': 0,
-            'amount': 14000
-        },
-        {
-            'code': '1112',
-            'item': 'but the majority have suffered alteration in some',
-            'slNo': 'yuuyu66677777',
-            'hsn': '44454',
-            'qty': 1,
-            'price': 12000,
-            'gstRate':18,
-            'cgst': 1000,
-            'sgst': 1000,
-            'igst': 0,
-            'amount': 14000
-        },
-        {
-            'code': '1113',
-            'item': 'obscure Latin words, consectetur, from a Lorem Ipsum passage, and going',
-            'slNo': 'uuuu677654',
-            'hsn': '44455',
-            'qty': 1,
-            'price': 10000,
-            'gstRate':18,
-            'cgst': 800,
-            'sgst': 800,
-            'igst': 0,
-            'amount': 11600
-        },
-    ],
-    'summary':{
-        'cgst':2000,
-        'sgst':2000,
-        'igst':0,
-        'total': 22000,
-        'inWords': 'Twenty two thousands only'
-    },
-    'terms':[
-        'ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries',
-        '1960s with the release of Letraset sheets containing Lorem Ipsum passages'
-        'making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney'
-    ],
-    'transactions':[
-        {
-            'account':'cash',
-            'amount':11000
-        },
-        {
-            'account':'credit card',
-            'amount': 11000
-        }
-    ],
-    'dueAmount': 0
-}
+flowable_ex()
 
 # import simplejson as json
 # import pandas as pd
