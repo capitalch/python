@@ -2,9 +2,47 @@
 from reportlab.lib.pagesizes import A4, letter
 from reportlab.lib.units import cm, inch, mm
 from reportlab.pdfgen import canvas
-from reportlab.platypus import SimpleDocTemplate, Paragraph
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, BaseDocTemplate
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+
+from reportlab.platypus.doctemplate import FrameBreak, PageTemplate
+from reportlab.platypus.frames import Frame
 from invoice import invoice
+
+
+def draw_invoice():
+    def draw_company_info(c):
+        pass
+
+    # c = canvas.Canvas('i1.pdf')
+    styles = getSampleStyleSheet()
+    styleH1 = styles['Heading1']
+    styleH2 = styles['Heading2']
+    styleN = styles['Normal']
+
+    ci = invoice['companyInfo']
+    # doc = BaseDocTemplate('invoice1.pdf')
+    doc = SimpleDocTemplate('invoice1.pdf', pagesize=A4, leftMargin=1*cm,
+                            rightMargin=1*cm, topMargin=1*cm, bottomMargin=1*cm)
+    
+    name = f"<b><font size=14>{ci['name']}</font></b><br/>{ci['address1']} {ci['address2']}"
+    ciNamePara = Paragraph(name, styleN)
+    # ciNamePara.wrap(10,10)
+    taxInvoicePara = Paragraph('Tax invoice', styleH2)
+    ciAddressPara = Paragraph(ci['address1'] + ci['address2'], styleN)
+    story = [ciNamePara, FrameBreak(), ciAddressPara]
+    frameLeft = Frame(cm,24*cm, 10*cm, 5*cm, showBoundary=1)
+    frameRight = Frame(11.5*cm, 24*cm, 9*cm, 5*cm, showBoundary=1)
+    # frameLeft
+    # frameLeft.addFromList(story)
+    page = PageTemplate(frames=[frameLeft, frameRight])
+    doc.addPageTemplates(page)
+
+    doc.build(story)
+
+
+draw_invoice()
+
 
 def canvas_ex():
     c = canvas.Canvas('hello.pdf')  # creates a file hello.pdf
@@ -20,22 +58,101 @@ def canvas_ex():
     c.showPage()  # ends the page and resets font, colors etc.
     c.save()
 
+
 def flowable_ex():
-    doc = SimpleDocTemplate("example_flowable.pdf",pagesize=A4,
-                        rightMargin=2*cm,leftMargin=2*cm,
-                        topMargin=2*cm,bottomMargin=2*cm)
+    doc = SimpleDocTemplate("example_flowable.pdf", pagesize=A4,
+                            rightMargin=2*cm, leftMargin=2*cm,
+                            topMargin=2*cm, bottomMargin=2*cm)
     my_text1 = "Lorem Ipsum has been the industry's \nstandard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
     my_text2 = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
-    para1 = Paragraph(my_text1,getSampleStyleSheet()['Normal'])
-    # para1.beginText(100,100)
+    para1 = Paragraph(my_text1, getSampleStyleSheet()['Normal'])
+    para1.beginText(1*inch, 1*inch)
     doc.build([
         # Paragraph(my_text1.replace("\n", "<br />"), getSampleStyleSheet()['Normal']),
         para1,
         Paragraph(my_text2, getSampleStyleSheet()['Normal'])
-        ])
+    ])
     print('ok')
 
-flowable_ex()
+
+def canvas_paragraph():
+    c = canvas.Canvas('hello.pdf')
+    my_text1 = 'Lorem Ipsum has been the industry standard dummy text ever since the 1500s,'
+    styleN = getSampleStyleSheet()['Normal']
+    style1 = ParagraphStyle({
+        'alignment': 0,
+        'borderColor': '#000000',
+        'borderWidth': 1,
+        'backColor': '#FFFF00'
+    })
+    p1 = Paragraph(my_text1, style1)
+    p1.wrap(200, 150)
+
+    p2 = Paragraph(my_text1, styleN)
+    p2.wrap(2*cm, 200*cm)
+
+    p1.drawOn(c, 20, 100)
+    p2.drawOn(c, 300, 100)
+    c.showPage()
+    c.save()
+
+
+def frame_canvas_paragraph():
+    c = canvas.Canvas('hello.pdf')
+    c.translate(0, 300)
+    my_text1 = 'Lorem Ipsum has been the industry standard dummy text ever since the 1500s,'
+    styleN = getSampleStyleSheet()['Normal']
+    p1 = Paragraph(my_text1, styleN)
+    # p1.wrap(100, 100)
+
+    p2 = Paragraph(my_text1, styleN)
+    # p2.wrap(2*cm, 200*cm)
+    story = [p1, p2]
+    f = Frame(inch, inch, 2*inch, 3*inch, showBoundary=1)
+    f.addFromList(story, c)
+    c.save()
+
+
+def simple_doc_template():
+    styleN = getSampleStyleSheet()['Normal']
+    styleH = getSampleStyleSheet()['Heading6']
+    my_text1 = 'Lorem Ipsum has been the industry standard dummy text ever since the 1500s,'
+    my_text2 = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters,"
+    para1 = Paragraph(my_text1, styleN)
+    para2 = Paragraph(my_text2, styleH)
+    story = [para1, para2]
+    doc = SimpleDocTemplate('myDoc.pdf')
+    doc.build(story)
+
+
+def docTemplate_page_frame_para():
+    c = canvas.Canvas('hello.pdf')
+    styleN = getSampleStyleSheet()['Normal']
+    styleH = getSampleStyleSheet()['Heading6']
+    my_text1 = 'Lorem Ipsum has been the industry standard dummy text ever since the 1500s,'
+    my_text2 = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters,"
+
+    style1 = ParagraphStyle({
+        'alignment': 0,
+        'borderColor': 'black',
+        'borderWidth': 1
+    })
+
+    para1 = Paragraph(my_text1, style1)
+    para2 = Paragraph(my_text2, styleH)
+
+    frame1 = Frame(inch, inch, 2*inch, 3*inch, showBoundary=1)
+    frame2 = Frame(4*inch, inch, 2*inch, 3*inch, showBoundary=1)
+    frame1.addFromList([para1], c)
+    frame2.addFromList([para2], c)
+    page = PageTemplate(frames=[frame1, frame2])
+    doc = SimpleDocTemplate('myDoc.pdf')
+    doc.addPageTemplates(page)
+    doc.build([para1, para2])
+
+
+# canvas_paragraph()
+# docTemplate_page_frame_para()
 
 # import simplejson as json
 # import pandas as pd

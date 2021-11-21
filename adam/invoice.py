@@ -1,8 +1,8 @@
 invoice = {
     'companyInfo': {
         'name': 'Capital Chowringhee Pvt Ltd',
-        'address1': '12 J.L. Nehru road',
-        'address2': '',
+        'address1': '13 J.L. Nehru road',
+        'address2': 'Below Peerless Inn',
         'pin': '700013',
         'phone': '9831052332, 8910322267, 9163055161',
         'email': 'capitalch@gmail.com',

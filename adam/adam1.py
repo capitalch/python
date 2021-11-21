@@ -1,13 +1,58 @@
 from fpdf import FPDF
 from datetime import datetime, date
+from invoice import invoice
 
-pdf = FPDF()
-pdf.add_page()
-pdf.set_font("helvetica", "B", 16)
-pdf.cell(30, 10, "Hello World!",0,2)
-pdf.cell(30,10,"Next line", ln=1)
-pdf.alias_nb_pages()
-pdf.output("tuto1.pdf")
+# pdf = FPDF()
+# pdf.add_page()
+# pdf.set_font("helvetica", "B", 16)
+# pdf.cell(30, 10, "Hello World!",0,2)
+# pdf.cell(30,10,"Next line", ln=1)
+# pdf.alias_nb_pages()
+# pdf.output("tuto1.pdf")
+
+
+def generate_invoice():
+    def draw_company_info(p, x, y, companyInfo):
+        p.set_font('Helvetica', size=14, style='B')
+        p.set_xy(x, y)
+        p.cell(0, 6, companyInfo['name'], align='L', ln=1)
+        p.set_font_size(10)
+        p.set_font(style='')
+        p.cell(0, 5, companyInfo['address1'], ln=1)
+        p.cell(0, 5, companyInfo['address2'], ln=1)
+        p.multi_cell(
+            120, 5, f"Pin: {companyInfo['pin']} Phone: {companyInfo['phone']} Email:{companyInfo['email']} Web: {companyInfo['web']} GSTIN: {companyInfo['gstin']} PAN: {companyInfo['pan']}", ln=1, align='L')
+        x1 = p.get_x()
+        y1 = p.get_y() + 2
+        x2 = 200
+        y2 = y1
+        p.line(x1, y1, x2, y2)
+
+    def draw_tax_invoice(p, x, y, info):
+        p.set_font('Helvetica', size=16, style='B')
+        p.set_xy(x, y)
+        p.multi_cell(0, 5, 'Tax invoice', align='L', ln=1)
+        p.set_font(size=10, style='B')
+        p.set_x(x)
+        p.multi_cell(0, 5, f"Inv no: {info['refNo']}", ln=1)
+        p.set_x(x)
+        p.multi_cell(0, 5, f"Date: {info['tranDate']}", ln=1)
+
+    companyInfo = invoice['companyInfo']
+    pdf = FPDF(unit='mm')
+    pdf.add_page()
+    # pdf.set_margin(10)
+    draw_company_info(pdf, 10, 10, companyInfo)
+    draw_tax_invoice(pdf, 160, 10, invoice)
+    # pdf.set_font('Helvetica', size=12)
+    # pdf.cell(0,12,companyInfo['name'], align='L', ln=1)
+    # pdf.cell(0,0,companyInfo['address1'], align='L')
+
+    # pdf.set_font('Helvetica',size=15,style='B')
+    # pdf.cell(0,0,'Tax Invoice', ln=1, align='R')
+
+    pdf.output('invoice.pdf')
+
 
 def generate_receipt(date, amount):
     pdf = FPDF(orientation='P', unit='pt', format='A4')
@@ -25,7 +70,9 @@ def generate_receipt(date, amount):
     pdf.cell(0, 25, "${}".format(amount), 0, 1)
     return pdf.output('receipt.pdf')
 
-generate_receipt('22-02-02', 10000)
+
+generate_invoice()
+# generate_receipt('22-02-02', 10000)
 
 # import fpdf
 # import socketio

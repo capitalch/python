@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "c:\\projects\\trace\\env\\Scripts\\python.exe",
+    "python.pythonPath": "c:\\projects\\python\\env\\Scripts\\python.exe",
     "python.formatting.provider": "autopep8",
 }
