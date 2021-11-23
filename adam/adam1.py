@@ -1,4 +1,4 @@
-from fpdf import FPDF
+from fpdf import FPDF, HTMLMixin
 from datetime import datetime, date
 from invoice import invoice
 
@@ -10,18 +10,22 @@ from invoice import invoice
 # pdf.alias_nb_pages()
 # pdf.output("tuto1.pdf")
 
+class FPDF(FPDF, HTMLMixin):
+    pass
 
 def generate_invoice():
     def draw_company_info(p, x, y, companyInfo):
         p.set_font('Helvetica', size=14, style='B')
         p.set_xy(x, y)
         p.cell(0, 6, companyInfo['name'], align='L', ln=1)
-        p.set_font_size(10)
-        p.set_font(style='')
-        p.cell(0, 5, companyInfo['address1'], ln=1)
-        p.cell(0, 5, companyInfo['address2'], ln=1)
+        # p.set_font_size(10)
+        p.set_font(style='', size=10)
         p.multi_cell(
-            120, 5, f"Pin: {companyInfo['pin']} Phone: {companyInfo['phone']} Email:{companyInfo['email']} Web: {companyInfo['web']} GSTIN: {companyInfo['gstin']} PAN: {companyInfo['pan']}", ln=1, align='L')
+            140, 5, f"{companyInfo['address1']} {companyInfo['address2']}", ln=1)
+        # p.cell(0, 5, companyInfo['address1'], ln=1)
+        # p.cell(0, 5, companyInfo['address2'], ln=1)
+        p.multi_cell(
+            140, 5, f"**Pin:** {companyInfo['pin']} **Phone:** {companyInfo['phone']} **Email:**{companyInfo['email']} **Web:** {companyInfo['web']} **GSTIN: {companyInfo['gstin']}** PAN: {companyInfo['pan']}", ln=1, align='L', markdown=True)
         x1 = p.get_x()
         y1 = p.get_y() + 2
         x2 = 200
@@ -38,19 +42,34 @@ def generate_invoice():
         p.set_x(x)
         p.multi_cell(0, 5, f"Date: {info['tranDate']}", ln=1)
 
+    def draw_items_table(p, x, y, table_header, products, ):
+        # products.insert(0, table_header)
+        p.set_font("Arial", size=9)
+        p.set_xy(x, y)
+        col_width = 20
+        row_height = 6
+        for colName in table_header:
+            p.cell(col_width,row_height,colName)
+        p.ln(8)
+        p.line(p.get_x(), p.get_y(), p.get_x() + 190, p.get_y())
+        p.ln(1)
+        for row in products:
+            for it in row:
+                p.cell(col_width, row_height, it)
+            p.ln(row_height)
+
     companyInfo = invoice['companyInfo']
     pdf = FPDF(unit='mm')
     pdf.add_page()
-    # pdf.set_margin(10)
+    pdf.set_margin(10)
     draw_company_info(pdf, 10, 10, companyInfo)
     draw_tax_invoice(pdf, 160, 10, invoice)
-    # pdf.set_font('Helvetica', size=12)
-    # pdf.cell(0,12,companyInfo['name'], align='L', ln=1)
-    # pdf.cell(0,0,companyInfo['address1'], align='L')
-
-    # pdf.set_font('Helvetica',size=15,style='B')
-    # pdf.cell(0,0,'Tax Invoice', ln=1, align='R')
-
+    table_header = ['#', 'Product', 'Price', 'Qty',
+                    'Gst(%)', 'Cgst', 'Sgst', 'Igst', 'Amount']
+    products = [['1', 'ABCD', '200', '1', '18', '12', '12', '0', '220'],
+                ['2', 'FBCD', '300', '2', '12', '12', '12', '0', '230']]
+    draw_items_table(pdf, 10, 45, table_header, products)
+    pdf.write_html('<b>Some html</b>')
     pdf.output('invoice.pdf')
 
 
