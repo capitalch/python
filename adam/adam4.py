@@ -1,9 +1,9 @@
-import simplejson as json
-import pandas as pd
-import numpy as np
-import psycopg2
-from itertools import repeat
-from psycopg2.extras import RealDictCursor, DictCursor
+# import simplejson as json
+# import pandas as pd
+# import numpy as np
+# import psycopg2
+# from itertools import repeat
+# from psycopg2.extras import RealDictCursor, DictCursor
 
 def execSql(cursor):
     out = None
