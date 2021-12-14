@@ -50,7 +50,6 @@ class FPDF(FPDF, HTMLMixin):
         p.set_x(x)
         p.multi_cell(0, 5, f"Date: {info['tranDate']}", ln=1)
 
-
 def generate_invoice():
     # def draw_company_info(p, x, y, companyInfo):
     #     p.set_font('Helvetica', size=14, style='B')
