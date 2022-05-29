@@ -1,7 +1,124 @@
-from fpdf import FPDF, HTMLMixin
-from datetime import datetime, date
-from invoice import invoice
+# import dtale
+import dtale
+import plotly.express as px
+import seaborn as sns
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import pylab as p
 
+# Define Data
+
+x = [1, 2, 3, 4, 5]
+y = [2, 4, 6, 8, 10]
+
+# Plot
+
+plt.plot(x, y)
+
+# Display
+
+plt.show()
+
+
+
+
+# df = pd.DataFrame(np.random.rand(10, 4), 
+#                   columns=('col_1', 'col_2', 'col_3', 'col_4'))
+# df.plot()
+
+# df = sns.load_dataset('planets')
+# df = px.data.tips()
+# df.head()
+# df = pd.DataFrame([1,2,3,4,5])
+# dtale.show(df,)
+# dtale.show(open_browser=True)
+# d = dtale.show(df, ignore_duplicate=True)
+# d.open_browser()
+
+print('abcd')
+
+# def encrypt(text,s):
+#     result = ""
+#     for i in range(len(text)):
+#         char = text[i]
+#         if(char == ' '):
+#             result += '*'
+#         elif (char.isupper()):
+#             result += chr((ord(char) + s-65) % 26 + 65)
+#         else:
+#             result += chr((ord(char) + s - 97) % 26 + 97)
+#     return result
+# def encrypt(plain_text, s):
+#     encrypted_text = ''
+#     for i in range(len(plain_text)):
+#         if plain_text[i] == ' ':
+#             encrypted_text = encrypted_text + plain_text[i]
+#         elif plain_text[i].isupper():
+#             encrypted_text = encrypted_text + chr((ord(plain_text[i])+s-65)%26+65)
+#         else:
+#             encrypted_text = encrypted_text + chr((ord(plain_text[i])+s-97)%26+97)
+#     return encrypted_text
+
+
+# def decrypt(encrypt_text, s):
+#     decrypted_text = ''
+#     for i in range(len(encrypt_text)):
+#         if encrypt_text[i] == ' ':
+#             decrypted_text = decrypted_text + encrypt_text[i]
+#         elif encrypt_text[i].isupper():
+#             decrypted_text = decrypted_text + chr((ord(encrypt_text[i])-s-65)%26+65)
+#         else:
+#             decrypted_text = decrypted_text + chr((ord(encrypt_text[i])-s-97)%26+97)
+#     return decrypted_text
+
+# encoded = encrypt('This is a test string', 13)
+# print(encoded)
+
+# id = str(9969)
+# encoded = base64.b64encode(id.encode('ascii')).decode('ascii')
+# decoded = base64.b64decode(encoded).decode('ascii')
+# print(str(decoded))
+
+# id = str(9969)
+# encoded = base64.a85encode(id.encode('ascii')).decode('ascii')
+# decoded = base64.a85decode(encoded).decode('ascii')
+# print(str(decoded))
+
+# id = str(9969)
+# encoded = base64.b32encode(id.encode('ascii')).decode('ascii')
+# decoded = base64.b32decode(encoded).decode('ascii')
+# print(str(decoded))
+
+# json = {
+#     'dbName': 'demo_accounts',
+#     'buCode': 'demounit1',
+#     'id': 9969
+# }
+# jsonString = djson.encode(json)
+# mystr = 'dbName:demo_accounts,buCode:demounit1,id:9969'
+# encoded = base64.urlsafe_b64encode(mystr.encode()).decode()
+# decoded = base64.urlsafe_b64decode(encoded.encode()).decode()
+# encrypted = encrypt(mystr,4)
+# decrypted = decrypt(encrypted,4)
+# ret = zlib.compress(jsonString.encode('ascii')).decode('ascii')
+
+# print(encoded)
+# key = Fernet.generate_key()
+# fernet = Fernet(key)
+# encMessage = fernet.encrypt(jsonString.encode()).decode()
+
+# encoded = base64.b32encode(jsonString.encode('utf-8')).decode('utf-8')
+
+# print(encMessage)
+
+# data:application/pdf;base64,
+# str = '''
+# JVBERi0xLjMKJf////8KOCAwIG9iago8PAovVHlwZSAvRXh0R1N0YXRlCi9jYSAxCj4+CmVuZG9iago3IDAgb2JqCjw8Ci9UeXBlIC9QYWdlCi9QYXJlbnQgMSAwIFIKL01lZGlhQm94IFswIDAgNTk1LjI4MDAyOSA4NDEuODkwMDE1XQovQ29udGVudHMgNSAwIFIKL1Jlc291cmNlcyA2IDAgUgo+PgplbmRvYmoKNiAwIG9iago8PAovUHJvY1NldCBbL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSV0KL0V4dEdTdGF0ZSA8PAovR3MxIDggMCBSCj4+Ci9Gb250IDw8Ci9GMSA5IDAgUgo+Pgo+PgplbmRvYmoKMTEgMCBvYmoKKHJlYWN0LXBkZikKZW5kb2JqCjEyIDAgb2JqCihyZWFjdC1wZGYpCmVuZG9iagoxMyAwIG9iagooRDoyMDIyMDEwODE4MjU0MlopCmVuZG9iagoxMCAwIG9iago8PAovUHJvZHVjZXIgMTEgMCBSCi9DcmVhdG9yIDEyIDAgUgovQ3JlYXRpb25EYXRlIDEzIDAgUgo+PgplbmRvYmoKOSAwIG9iago8PAovVHlwZSAvRm9udAovQmFzZUZvbnQgL0hlbHZldGljYQovU3VidHlwZSAvVHlwZTEKL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL0NhdGFsb2cKL1BhZ2VzIDEgMCBSCi9OYW1lcyAyIDAgUgovVmlld2VyUHJlZmVyZW5jZXMgNCAwIFIKPj4KZW5kb2JqCjEgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9Db3VudCAxCi9LaWRzIFs3IDAgUl0KPj4KZW5kb2JqCjIgMCBvYmoKPDwKL0Rlc3RzIDw8CiAgL05hbWVzIFsKXQo+Pgo+PgplbmRvYmoKNCAwIG9iago8PAovRGlzcGxheURvY1RpdGxlIHRydWUKPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0xlbmd0aCAyODU1Ci9GaWx0ZXIgL0ZsYXRlRGVjb2RlCj4+CnN0cmVhbQp4nO1c2Y4ctxV976/oHxDNfQGEebCTGMhDAEUD5MHwg6amOzYwY0AQkPx+ziXZtZK19Giq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
+# '''
+# str1 = 'a29kZXJwbGFjZQ=='
+# ret = base64.b64decode(str)
+# print(ret)
 # pdf = FPDF()
 # pdf.add_page()
 # pdf.set_font("helvetica", "B", 16)
@@ -11,46 +128,47 @@ from invoice import invoice
 # pdf.output("tuto1.pdf")
 
 
-class FPDF(FPDF, HTMLMixin):
-    def header(self):
-        # self.set_font('Helvetica', size=20, style='B')
-        # self.cell(0,0, 'This is a header')
-        # print('ok')
-        self.draw_company_info(10, 10, invoice['companyInfo'])
-        self.draw_tax_invoice(160, 10, invoice)
-        self.set_xy(10,50)
+# class FPDF(FPDF, HTMLMixin):
+#     def header(self):
+#         # self.set_font('Helvetica', size=20, style='B')
+#         # self.cell(0,0, 'This is a header')
+#         # print('ok')
+#         self.draw_company_info(10, 10, invoice['companyInfo'])
+#         self.draw_tax_invoice(160, 10, invoice)
+#         self.set_xy(10, 50)
 
-    def draw_company_info(self, x, y, companyInfo):
-        p = self
-        p.set_font('Helvetica', size=14, style='B')
-        p.set_xy(x, y)
-        p.cell(0, 6, companyInfo['name'], align='L', ln=1)
-        # p.set_font_size(10)
-        p.set_font(style='', size=10)
-        p.multi_cell(
-            140, 5, f"{companyInfo['address1']} {companyInfo['address2']}", ln=1)
-        # p.cell(0, 5, companyInfo['address1'], ln=1)
-        # p.cell(0, 5, companyInfo['address2'], ln=1)
-        p.multi_cell(
-            140, 5, f"**Pin:** {companyInfo['pin']} **Phone:** {companyInfo['phone']} **Email:**{companyInfo['email']} **Web:** {companyInfo['web']} **GSTIN: {companyInfo['gstin']}** PAN: {companyInfo['pan']}", ln=1, align='L', markdown=True)
-        x1 = p.get_x()
-        y1 = p.get_y() + 2
-        x2 = 200
-        y2 = y1
-        p.line(x1, y1, x2, y2)
+#     def draw_company_info(self, x, y, companyInfo):
+#         p = self
+#         p.set_font('Helvetica', size=14, style='B')
+#         p.set_xy(x, y)
+#         p.cell(0, 6, companyInfo['name'], align='L', ln=1)
+#         # p.set_font_size(10)
+#         p.set_font(style='', size=10)
+#         p.multi_cell(
+#             140, 5, f"{companyInfo['address1']} {companyInfo['address2']}", ln=1)
+#         # p.cell(0, 5, companyInfo['address1'], ln=1)
+#         # p.cell(0, 5, companyInfo['address2'], ln=1)
+#         p.multi_cell(
+#             140, 5, f"**Pin:** {companyInfo['pin']} **Phone:** {companyInfo['phone']} **Email:**{companyInfo['email']} **Web:** {companyInfo['web']} **GSTIN: {companyInfo['gstin']}** PAN: {companyInfo['pan']}", ln=1, align='L', markdown=True)
+#         x1 = p.get_x()
+#         y1 = p.get_y() + 2
+#         x2 = 200
+#         y2 = y1
+#         p.line(x1, y1, x2, y2)
 
-    def draw_tax_invoice(self, x, y, info):
-        p = self
-        p.set_font('Helvetica', size=16, style='B')
-        p.set_xy(x, y)
-        p.multi_cell(0, 5, 'Tax invoice', align='L', ln=1)
-        p.set_font(size=10, style='B')
-        p.set_x(x)
-        p.multi_cell(0, 5, f"Inv no: {info['refNo']}", ln=1)
-        p.set_x(x)
-        p.multi_cell(0, 5, f"Date: {info['tranDate']}", ln=1)
+#     def draw_tax_invoice(self, x, y, info):
+#         p = self
+#         p.set_font('Helvetica', size=16, style='B')
+#         p.set_xy(x, y)
+#         p.multi_cell(0, 5, 'Tax invoice', align='L', ln=1)
+#         p.set_font(size=10, style='B')
+#         p.set_x(x)
+#         p.multi_cell(0, 5, f"Inv no: {info['refNo']}", ln=1)
+#         p.set_x(x)
+#         p.multi_cell(0, 5, f"Date: {info['tranDate']}", ln=1)
 
-def generate_invoice():
+
+# def generate_invoice():
     # def draw_company_info(p, x, y, companyInfo):
     #     p.set_font('Helvetica', size=14, style='B')
     #     p.set_xy(x, y)
@@ -79,61 +197,62 @@ def generate_invoice():
     #     p.set_x(x)
     #     p.multi_cell(0, 5, f"Date: {info['tranDate']}", ln=1)
 
-    def draw_items_table(p, x, y, table_header, products, ):
-        # products.insert(0, table_header)
-        p.set_font("Arial", size=9)
-        p.set_xy(x, y)
-        col_width = 20
-        row_height = 6
-        for colName in table_header:
-            p.cell(col_width, row_height, colName)
-        p.ln(8)
-        p.line(p.get_x(), p.get_y(), p.get_x() + 190, p.get_y())
-        p.ln(1)
-        for row in products:
-            for it in row:
-                p.cell(col_width, row_height, it)
-            p.ln(row_height)
+#     def draw_items_table(p, x, y, table_header, products, ):
+#         # products.insert(0, table_header)
+#         p.set_font("Arial", size=9)
+#         p.set_xy(x, y)
+#         col_width = 20
+#         row_height = 6
+#         for colName in table_header:
+#             p.cell(col_width, row_height, colName)
+#         p.ln(8)
+#         p.line(p.get_x(), p.get_y(), p.get_x() + 190, p.get_y())
+#         p.ln(1)
+#         for row in products:
+#             for it in row:
+#                 p.cell(col_width, row_height, it)
+#             p.ln(row_height)
 
-    def get_long_html():
-        ht = []
-        for i in range(2000):
-            ht.append(f'''<div style="color:red"><b>This is a test line {i}</b></div><br/>''')
-        return(''.join(ht))
+#     def get_long_html():
+#         ht = []
+#         for i in range(2000):
+#             ht.append(
+#                 f'''<div style="color:red"><b>This is a test line {i}</b></div><br/>''')
+#         return(''.join(ht))
 
-    companyInfo = invoice['companyInfo']
-    pdf = FPDF(unit='mm')
-    pdf.add_page()
-    pdf.set_margin(10)
-    # draw_company_info(pdf, 10, 10, companyInfo)
-    # draw_tax_invoice(pdf, 160, 10, invoice)
-    table_header = ['#', 'Product', 'Price', 'Qty',
-                    'Gst(%)', 'Cgst', 'Sgst', 'Igst', 'Amount']
-    products = [['1', 'ABCD', '200', '1', '18', '12', '12', '0', '220'],
-                ['2', 'FBCD', '300', '2', '12', '12', '12', '0', '230']]
-    # draw_items_table(pdf, 10, 45, table_header, products)
-    pdf.write_html(get_long_html())
-    pdf.output('invoice.pdf')
-
-
-def generate_receipt(date, amount):
-    pdf = FPDF(orientation='P', unit='pt', format='A4')
-    pdf.add_page()
-    pdf.set_font("Times", "B", 24)
-    pdf.cell(0, 80, "Purchase Receipt", 0, 1, "C")
-    pdf.set_font("Times", "B", 14)
-    pdf.cell(100, 25, "Payment Date:")
-    pdf.set_font("Times", "", 12)
-    pdf.cell(0, 25, "{}".format(date), 0, 1)
-    pdf.cell(0, 5, "", 0, 1)
-    pdf.set_font("Times", "B", 14)
-    pdf.cell(100, 25, "Payment Total:")
-    pdf.set_font("Times", "", 12)
-    pdf.cell(0, 25, "${}".format(amount), 0, 1)
-    return pdf.output('receipt.pdf')
+#     companyInfo = invoice['companyInfo']
+#     pdf = FPDF(unit='mm')
+#     pdf.add_page()
+#     pdf.set_margin(10)
+#     # draw_company_info(pdf, 10, 10, companyInfo)
+#     # draw_tax_invoice(pdf, 160, 10, invoice)
+#     table_header = ['#', 'Product', 'Price', 'Qty',
+#                     'Gst(%)', 'Cgst', 'Sgst', 'Igst', 'Amount']
+#     products = [['1', 'ABCD', '200', '1', '18', '12', '12', '0', '220'],
+#                 ['2', 'FBCD', '300', '2', '12', '12', '12', '0', '230']]
+#     # draw_items_table(pdf, 10, 45, table_header, products)
+#     pdf.write_html(get_long_html())
+#     pdf.output('invoice.pdf')
 
 
-generate_invoice()
+# def generate_receipt(date, amount):
+#     pdf = FPDF(orientation='P', unit='pt', format='A4')
+#     pdf.add_page()
+#     pdf.set_font("Times", "B", 24)
+#     pdf.cell(0, 80, "Purchase Receipt", 0, 1, "C")
+#     pdf.set_font("Times", "B", 14)
+#     pdf.cell(100, 25, "Payment Date:")
+#     pdf.set_font("Times", "", 12)
+#     pdf.cell(0, 25, "{}".format(date), 0, 1)
+#     pdf.cell(0, 5, "", 0, 1)
+#     pdf.set_font("Times", "B", 14)
+#     pdf.cell(100, 25, "Payment Total:")
+#     pdf.set_font("Times", "", 12)
+#     pdf.cell(0, 25, "${}".format(amount), 0, 1)
+#     return pdf.output('receipt.pdf')
+
+
+# generate_invoice()
 # generate_receipt('22-02-02', 10000)
 
 # import fpdf
